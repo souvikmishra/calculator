@@ -14,24 +14,26 @@ function App() {
   const updateInputValue = (e) => {
     setInputs({
       ...inputs,
-      [e.target.name]: e.target.value,
+      [e.target.name]: parseInt(e.target.value),
     });
   };
+
+  const evaluateExpression = (data) =>
+    operationApiService
+      .getExpressionResult(data)
+      .then((response) => {
+        setResult(response.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
 
   const [result, setResult] = useState(0);
 
   // callback to handle props being passed from button
   const handleOperatorCallback = (newOperator) => {
     setOperator(newOperator);
-    operationApiService
-      .calculateExpression({ inputs, operator })
-      .then((response) => {
-        this.setResult(response.data);
-        console.log(response);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+    evaluateExpression({ inputs, operator: newOperator });
   };
 
   return (
